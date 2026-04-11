@@ -21,10 +21,13 @@ dependencies = [
 ]
 
 [[tool.uv.index]]
-name = "pytorch-cu124"
-url = "https://download.pytorch.org/whl/cu124"
+name = "pytorch-nightly"
+url = "https://download.pytorch.org/whl/nightly/cu128"
 explicit = false
 
 [tool.uv.sources]
-torch = { index = "pytorch-cu124" }
-torchvision = { index = "pytorch-cu124" }
+torch = { index = "pytorch-nightly" }
+torchvision = { index = "pytorch-nightly" }
+
+[tool.uv]
+index-strategy = "unsafe-best-match"

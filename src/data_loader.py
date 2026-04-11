@@ -17,6 +17,7 @@ class UTKFaceDataset(Dataset):
 
     def __getitem__(self, idx):
         img_path = self.dataframe.iloc[idx]["path"]
+        img_path = img_path.replace('\\', '/')
         age = self.dataframe.iloc[idx]["age"]
         image = Image.open(img_path).convert("RGB")
         if self.transform:

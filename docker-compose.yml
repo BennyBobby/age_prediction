@@ -1,0 +1,18 @@
+services:
+  age-prediction:
+    build: .
+    shm_size: '2gb'
+    image: age-prediction-gpu
+    container_name: age_dev
+    volumes:
+      - .:/app 
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    stdin_open: true # Equivalent de -i
+    tty: true # Equivalent de -t
+    working_dir: /app
