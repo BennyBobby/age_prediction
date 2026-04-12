@@ -20,3 +20,7 @@ reports
 
 #models
 models
+
+#database: optuna
+*.db
+optuna/
