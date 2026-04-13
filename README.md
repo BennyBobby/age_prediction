@@ -24,7 +24,7 @@ This project implements a facial age estimation pipeline using PyTorch. It lever
 ├── reports/                # Exported metrics plots (.png)
 ├── src/
 │   ├── data_loader.py      # Custom Dataset and DataLoader
-│   ├── model.py            # Model architecture 
+│   ├── model.py            # Model architecture
 │   ├── train.py            # Standard training script
 │   └── train_optuna.py     # Hyperparameter tuning script
 ├── pyproject.toml          # Project dependencies
@@ -68,7 +68,7 @@ uv run python src/train_optuna.py
 Visualize the study:
 
 ```bash
-uv run optuna-dashboard sqlite:///optuna/optuna_study.db
+uv run optuna-dashboard sqlite:///optuna/optuna_study.db --host 0.0.0.0
 ```
 
 ### 2. Final Training
