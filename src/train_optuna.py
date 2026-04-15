@@ -59,8 +59,6 @@ def objective(trial):
         avg_val_mae = val_mae / len(val_loader)
 
         trial.report(avg_val_mae, epoch)
-
-        # If the trial is performing poorly compared to others, stop it early
         if trial.should_prune():
             raise optuna.exceptions.TrialPruned()
 
@@ -83,11 +81,9 @@ if __name__ == "__main__":
     print("Starting Optuna optimization...")
     study.optimize(objective, n_trials=15)
 
-    print("\n" + "=" * 30)
-    print("OPTIMIZATION COMPLETED")
+    print("\nOPTIMIZATION COMPLETED")
     print(f"Best trial: {study.best_trial.number}")
     print(f"Best MAE: {study.best_value:.2f}")
     print("Best hyperparameters:")
     for key, value in study.best_params.items():
         print(f"{key}: {value}")
-    print("=" * 30)
