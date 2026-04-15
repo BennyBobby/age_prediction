@@ -21,7 +21,8 @@ def objective(trial):
 
     model = get_model()
     criterion = nn.L1Loss()
-    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=0.05)
+    weight_decay = trial.suggest_float("weight_decay", 1e-4, 0.1, log=True)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
 
     model, optimizer, train_loader, val_loader = accelerator.prepare(
         model, optimizer, train_loader, val_loader
@@ -61,13 +62,13 @@ def objective(trial):
 
         # If the trial is performing poorly compared to others, stop it early
         if trial.should_prune():
-            accelerator.end_training()
             raise optuna.exceptions.TrialPruned()
 
         if avg_val_mae < best_trial_mae:
             best_trial_mae = avg_val_mae
 
     accelerator.end_training()
+
     return best_trial_mae
 
 
