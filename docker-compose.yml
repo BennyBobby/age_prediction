@@ -1,11 +1,15 @@
 services:
   age-prediction:
     build: .
-    shm_size: '2gb'
+    shm_size: "2gb"
     image: age-prediction-gpu
     container_name: age_dev
+    ports:
+      - "8080:8080" # Optuna Dashboard
+      - "6006:6006" # TensorBoard
+      - "8000:8000" # FastAPI
     volumes:
-      - .:/app 
+      - .:/app
     deploy:
       resources:
         reservations:
