@@ -7,6 +7,7 @@ requires-python = "==3.12.*"
 dependencies = [
     "accelerate>=1.13.0",
     "fastapi>=0.135.2",
+    "httpx>=0.28.1",
     "matplotlib>=3.10.8",
     "numpy>=2.4.3",
     "opencv-python>=4.13.0.92",
@@ -14,6 +15,8 @@ dependencies = [
     "optuna-dashboard>=0.20.0",
     "pandas>=3.0.1",
     "pillow>=12.1.1",
+    "pytest>=9.0.3",
+    "python-multipart>=0.0.26",
     "scikit-learn>=1.8.0",
     "seaborn>=0.13.2",
     "tensorboard>=2.20.0",
@@ -33,3 +36,7 @@ torchvision = { index = "pytorch-nightly" }
 
 [tool.uv]
 index-strategy = "unsafe-best-match"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
