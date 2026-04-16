@@ -1,9 +1,10 @@
 services:
-  age-prediction:
-    build: .
+  api:
+    build: 
+      context: . 
     shm_size: "2gb"
-    image: age-prediction-gpu
-    container_name: age_dev
+    image: age-prediction-backend
+    container_name: age_api_dev
     ports:
       - "8080:8080" # Optuna Dashboard
       - "6006:6006" # TensorBoard
@@ -17,6 +18,21 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
-    stdin_open: true # Equivalent de -i
-    tty: true # Equivalent de -t
+    stdin_open: true 
+    tty: true 
     working_dir: /app
+
+  frontend:
+    build:
+      context: ./frontend 
+    image: age-prediction-frontend
+    container_name: age_front_dev
+    ports:
+      - "5173:5173" # Vite
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules 
+    depends_on:
+      - api
+    environment:
+      - VITE_API_URL=http://localhost:8000
