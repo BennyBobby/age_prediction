@@ -1,6 +1,7 @@
 import torch
 import io
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 from src.model import get_model
 from torchvision import transforms
@@ -9,6 +10,13 @@ app = FastAPI(
     title="Age Prediction API",
     description="API to predict age from a face image using ConvNeXt-Tiny",
     version="1.0.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
