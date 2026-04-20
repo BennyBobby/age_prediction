@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 function App() {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [prediction, setPrediction] = useState(null);
+  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
     setFile(selected);
-    setPrediction(null);
+    setResult(null);
+    setError(null);
     if (selected) {
       setPreview(URL.createObjectURL(selected));
     }
@@ -18,7 +22,7 @@ function App() {
 
   const handleUpload = async () => {
     if (!file) {
-      alert("Please select a file first");
+      setError("Please select an image first.");
       return;
     }
 
@@ -26,14 +30,22 @@ function App() {
     formData.append("file", file);
 
     setLoading(true);
-    setPrediction(null);
+    setResult(null);
+    setError(null);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
-      const response = await axios.post(`${apiUrl}/predict`, formData);
-      setPrediction(response.data.predicted_age);
+      const response = await axios.post(`${API_URL}/predict`, formData, {
+        timeout: 30000,
+      });
+      setResult(response.data);
     } catch (e) {
-      console.error("Error during prediction:", e);
+      if (e.code === "ECONNABORTED") {
+        setError("Request timed out. The server took too long to respond.");
+      } else if (e.response) {
+        setError(e.response.data?.detail || "Prediction failed.");
+      } else {
+        setError("Cannot reach the server. Make sure the API is running.");
+      }
     } finally {
       setLoading(false);
     }
@@ -45,7 +57,7 @@ function App() {
 
       <input type="file" accept="image/*" onChange={handleFileChange} />
 
-      <button onClick={handleUpload} style={{ marginLeft: "10px" }}>
+      <button onClick={handleUpload} style={{ marginLeft: "10px" }} disabled={loading}>
         Analyze Image
       </button>
 
@@ -81,8 +93,29 @@ function App() {
         </div>
       )}
 
-      {prediction !== null && !loading && (
-        <h2 style={{ marginTop: "20px" }}>Estimated Age: {prediction} years old</h2>
+      {error && (
+        <p style={{ marginTop: "20px", color: "#dc2626", fontWeight: 500 }}>
+          {error}
+        </p>
+      )}
+
+      {result && !loading && (
+        <div style={{ marginTop: "20px" }}>
+          {result.face_crop && (
+            <div style={{ marginBottom: "12px" }}>
+              <p style={{ color: "#6b7280", fontSize: "0.85rem", marginBottom: "6px" }}>Detected face</p>
+              <img
+                src={result.face_crop}
+                alt="Detected face"
+                style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "8px", border: "2px solid #4f46e5" }}
+              />
+            </div>
+          )}
+          <h2>Estimated Age: {result.predicted_age} years old</h2>
+          <p style={{ color: "#6b7280", fontSize: "0.95rem" }}>
+            Range: {result.confidence_interval.low} – {result.confidence_interval.high} years (95% confidence)
+          </p>
+        </div>
       )}
 
       <style>{`

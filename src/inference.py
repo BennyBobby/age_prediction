@@ -57,8 +57,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model",
         type=str,
-        default="models/convnext_tiny_bs64_lr2.90e-04_wd1.02e-04_mae4.49.pth",
-        help="Path to the .pth model file",
+        default=os.getenv("MODEL_PATH", "models/convnext_tiny_bs64_lr2.90e-04_wd1.02e-04_mae4.49.pth"),
+        help="Path to the .pth model file (or set MODEL_PATH env var)",
     )
 
     args = parser.parse_args()

@@ -18,8 +18,10 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
-    stdin_open: true 
-    tty: true 
+    environment:
+      - MODEL_PATH=models/convnext_tiny_bs64_lr2.90e-04_wd1.02e-04_mae4.49.pth
+    stdin_open: true
+    tty: true
     working_dir: /app
 
   frontend:
